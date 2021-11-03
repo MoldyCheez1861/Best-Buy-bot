@@ -1,0 +1,71 @@
+import time
+from selenium import webdriver
+from pynput.keyboard import Key,Controller
+keyboard = Controller()
+
+
+class PagePoller:
+    def __init__(self, url):
+        self.url = url
+        self.createBrowser()
+
+    def checkAvailable(self):
+        addToCartButton = addButton = self.driver.find_element_by_class_name("add-to-cart-button")
+        if ("btn-disabled" in addToCartButton.get_attribute("class")):
+            return False
+        else:
+            addToCartButton.click()
+            return True
+
+    def createBrowser(self):
+        self.driver = webdriver.Firefox()
+        self.driver.get(self.url)
+
+    def refreshPage(self):
+        time.sleep(3)
+        with keyboard.pressed(Key.ctrl):
+         keyboard.press('r')
+         keyboard.release('r')
+
+
+textFile = open("zeldajoycon.txt")
+lines = textFile.readlines()
+print(lines)
+
+pages = []
+for u in lines:
+    pages.append(PagePoller(u))
+
+while True:
+    toRemove = []
+    for p in pages:
+        if (p.checkAvailable()):
+            toRemove.append(p)
+        else:
+            p.refreshPage()
+
+    for p in toRemove:
+        pages.remove(p)
+
+    #time.sleep(0)
+
+
+
+#
+# #driver = webdriver.Firefox()
+#
+# # happy case - item is available
+# #driver.get("https://www.gamestop.com/video-games/nintendo-switch/games/products/the-legend-of-zelda-skyward-sword-hd/11118960.html?condition=New)
+#
+#
+# #driver.get("https://www.gamestop.com/video-games/nintendo-switch/games/products/the-legend-of-zelda-skyward-sword-hd/11118960.html?condition=New")
+#
+
+
+# good
+# <button class="btn btn-primary btn-lg btn-block btn-leading-ficon add-to-cart-button" type="button" style="padding:0 8px">
+# </button>
+
+
+# bad
+# <button class="btn btn-disabled btn-lg btn-block add-to-cart-button" disabled="" type="button" style="padding: 0px 8px;">Sold Out</button>
