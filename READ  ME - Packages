@@ -1,0 +1,8 @@
+Go to File/ Project: {Project_Name} and click Python Interpreter, click the + sign, and add these packages
+
+pip	
+pynput	
+selenium	
+setuptools	
+six	
+urllib3	
